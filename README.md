@@ -1,75 +1,116 @@
-# Blockchain India Challenge — Hackathon Project
+# 4Meme-MCP
 
-Blockchain-enabled solutions for government and public-sector use cases.
+MCP server + setup UI for querying `four.meme` launchpad data and helper on-chain analytics.
 
----
+This repo contains:
+- a Next.js app with an MCP setup panel
+- an MCP server in `mcp-server/` that exposes tools over stdio
 
-## Blockchain India Challenge — Highlights
+## What this MCP exposes
 
-The **Blockchain India Challenge** focuses on developing **citizen-centric innovative solutions** using **Blockchain and Web3**. The initiative aims to leverage the expertise and capabilities of the Indian startup ecosystem to build innovative applications based on Blockchain Technology and Web3, and to enhance India's digital governance by enabling **trust, transparency and efficiency**.
+Tools implemented in `mcp-server/src/index.ts`:
 
-- **Four rounds of competition:** Ideation → Prototype → Minimum Viable Product → Deployment  
-- **Mentorship** by C-DAC and external experts  
-- **Goal:** Tangible, innovative solutions that can be implemented to address national challenges in collaboration with relevant government departments  
+- `get_public_config`
+- `get_token_info` (input: `address`)
+- `get_rankings` (input: `category`, `page`, `size`)
+- `get_onchain_info` (input: `address`)
+- `get_trade_quote` (input: `token`, `side`, optional `amount`, `funds`)
+- `get_tax_rewards` (input: `tokenAddress`, `userAddress`)
+- `calculate_initial_price` (input: `maxRaising`, `totalSupply`, `offers`, `reserves`)
+- `is_agent_wallet` (input: `address`)
 
-**Important:** Solutions developed under the hackathon are **non–crypto based** Blockchain & Web3 applications.
+Data sources used:
+- `https://four.meme/meme-api/v1`
+- BSC RPC + helper contracts via `ethers`
 
-### Major focus and outcome
+## Project structure
 
-- **Development and deployment** of 10 pilot solutions from the winners, based on Web3 and Blockchain, in collaboration with Govt institutions/departments of the states.  
-- **Opportunities for startups** to take the outcome forward for larger proliferation after the completion of the challenge.  
-- **Promote entrepreneurs** in the area of Blockchain Technology and Web3 and wider adoption of the technology.  
-- **Opportunity for winners** to host their applications as part of the **National Blockchain Technology Stack** and collaborate with user agencies/departments for deployment.
-
----
-
-## Tracks (All)
-
-| # | Track | Focus |
-|---|--------|--------|
-| 1 | **e-Procurement** | GeM platform, Make in India compliance, PPP-MII norms, tamper-proof supplier declarations |
-| 2 | **Digital Forensics** | Immutable evidence logging, chain-of-custody, smart-contract access control |
-| 3 | **Government Document Management** | Certificates/Resolutions, lifecycle (draft → review → approval → issuance), instant verification |
-| 4 | **Public Distribution System** | PDS transparency, procurement-to-delivery ledger, leakage/misuse reduction |
-| 5 | **Environmental & Sustainability** | Carbon credits, E-Waste, RECs, hazardous waste; trust & no double-counting |
-| 6 | **Health Data Integrity** | Telemedicine trust layer, hashes on-chain, consent, medico-legal logs |
-| 7 | **Land Administration** | Tokenized land records, NFTs, title/encumbrances, instant verification |
-| 8 | **Supply Chain** | Cross-border trade, e-BoL, CoO, inspection certs on permissioned chain |
-| 9 | **Power** | Smart meter data on-chain, single source of truth for consumers/utilities/regulators |
-| 10 | **IoT/IIoT** | Immutable IoT event ledger, smart cities/industrial, chain of custody, compliance |
-
----
-
-## Project structure (to be added)
-
-```
-/
-├── README.md           # This file
-├── docs/               # Problem statement, design, APIs
-├── contracts/          # Smart contracts (e.g. Solidity)
-├── backend/            # APIs, indexing, integrations
-├── frontend/           # Web / mobile UI
-└── docker/             # Local chain & services
+```text
+4Meme-MCP/
+├── app/                       # Next.js app (includes MCP setup UI)
+├── mcp-server/                # MCP server implementation
+│   ├── src/
+│   ├── package.json
+│   └── run-mcp.sh             # stdio launcher used by Cursor/Claude
+├── .cursor/mcp.json           # Project-local Cursor MCP config
+└── package.json               # Root scripts (next + mcp:dev)
 ```
 
----
+## Local development
 
-## Quick start
+Install dependencies:
 
-1. **Pick a track** from the table above.
-2. Define **user flows** and **on-chain vs off-chain** data.
-3. Implement **contracts** and **backend**, then **frontend**.
-4. Add **README** sections: problem, solution, tech stack, run instructions.
+```bash
+npm install
+cd mcp-server && npm install
+```
 
----
+Run the web app:
 
-## Tech stack (suggested)
+```bash
+npm run dev
+```
 
-- **Chain:** Ethereum-compatible L2 / permissioned (e.g. Polygon, Hyperledger Besu)
-- **Contracts:** Solidity, Hardhat/Foundry
-- **Backend:** Node.js / Python; IPFS or DB for large payloads; hashes on-chain
-- **Frontend:** React/Next.js or Flutter for verification UIs
+Run MCP server from repo root:
 
----
+```bash
+npm run mcp:dev
+```
 
-*Next step: choose a track and we can scaffold contracts + API + UI for it.*
+## MCP config
+
+### Cursor (project-local)
+
+Use `.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "4mememcp": {
+      "command": "bash",
+      "args": ["${workspaceFolder}/mcp-server/run-mcp.sh"]
+    }
+  }
+}
+```
+
+If your Cursor workspace root is the parent folder (not `4Meme-MCP`), use:
+
+```json
+{
+  "mcpServers": {
+    "4mememcp": {
+      "command": "bash",
+      "args": ["${workspaceFolder}/4Meme-MCP/mcp-server/run-mcp.sh"]
+    }
+  }
+}
+```
+
+### Claude Desktop
+
+Add this under `mcpServers` in:
+`~/Library/Application Support/Claude/claude_desktop_config.json`
+
+```json
+{
+  "4mememcp": {
+    "command": "bash",
+    "args": ["/absolute/path/to/4Meme-MCP/mcp-server/run-mcp.sh"]
+  }
+}
+```
+
+## Example prompts
+
+- `Call get_rankings with category "hot", page 1, size 10`
+- `Call get_token_info for address "0x..."`
+- `Call get_onchain_info for address "0x..."`
+- `Call get_trade_quote with token "0x...", side "buy", amount "1", funds "0"`
+- `Call get_tax_rewards with tokenAddress "0x..." and userAddress "0x..."`
+
+## Notes
+
+- `run-mcp.sh` launches the server with `tsx` for reliable TypeScript execution.
+- The MCP server communicates over stdio; restart Cursor/Claude after config changes.
+

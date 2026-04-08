@@ -19,11 +19,11 @@ export default function Home() {
               style={{ color: 'rgba(255,255,255,0.45)', borderColor: 'rgba(255,255,255,0.45)' }}
             >
               <img
-                src="https://four.meme/logo.png"
+                src="https://four-meme.gitbook.io/four.meme/~gitbook/image?url=https%3A%2F%2F3837000096-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Forganizations%252F9fGqliRxSs2MBO4CL3n7%252Fsites%252Fsite_m0EJr%252Ficon%252FiUIyxOLmu3VP4PEZL7Xm%252FFPUR.png%3Falt%3Dmedia%26token%3D17ffd2c3-f8ae-4e3b-b641-beb599d04e4b&width=32&dpr=2&quality=100&sign=e2df749e&sv=2"
                 alt="4Meme"
                 className="w-4 h-4 rounded-sm"
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://bags.fm/assets/images/bags-icon.png';
+                  (e.target as HTMLImageElement).src = 'https://four-meme.gitbook.io/four.meme/~gitbook/image?url=https%3A%2F%2F3837000096-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Forganizations%252F9fGqliRxSs2MBO4CL3n7%252Fsites%252Fsite_m0EJr%252Ficon%252FiUIyxOLmu3VP4PEZL7Xm%252FFPUR.png%3Falt%3Dmedia%26token%3D17ffd2c3-f8ae-4e3b-b641-beb599d04e4b&width=32&dpr=2&quality=100&sign=e2df749e&sv=2';
                 }}
                 loading="lazy"
               />

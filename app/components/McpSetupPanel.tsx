@@ -3,17 +3,12 @@
 import { useMemo, useState } from 'react';
 
 const GREEN = '#20D55A';
-const MCP_SERVER_DIR = '/Users/ayush/Desktop/india winner/my-app/mcp-server';
-const MCP_SERVER_DIST = '/Users/ayush/Desktop/india winner/my-app/mcp-server/dist/index.js';
 
 const cursorConfig = `{
   "mcpServers": {
     "4mememcp": {
-      "command": "node",
-      "args": ["${MCP_SERVER_DIST}"],
-      "env": {
-        "FOUR_MEME_API_KEY": "your_api_key_here"
-      }
+      "command": "bash",
+      "args": ["\${workspaceFolder}/mcp-server/run-mcp.sh"]
     }
   }
 }`;
@@ -21,11 +16,8 @@ const cursorConfig = `{
 const claudeConfig = `{
   "mcpServers": {
     "4mememcp": {
-      "command": "node",
-      "args": ["${MCP_SERVER_DIST}"],
-      "env": {
-        "FOUR_MEME_API_KEY": "your_api_key_here"
-      }
+      "command": "bash",
+      "args": ["/absolute/path/to/4Meme-MCP/mcp-server/run-mcp.sh"]
     }
   }
 }`;
@@ -43,10 +35,17 @@ Read-only endpoints used:
 
 MCP transport:
 - Local stdio server (dev):
-  npm run dev --prefix "${MCP_SERVER_DIR}"
+  npm run mcp:dev
 
-- Local stdio server (prod):
-  node "${MCP_SERVER_DIST}"`;
+Input examples:
+- address: "0x1234...abcd"
+- token: "0x1234...abcd"
+- userAddress: "0xabcd...1234"
+
+Notes:
+- Cursor config above assumes workspace root is 4Meme-MCP.
+- If workspace root is parent folder, use \${workspaceFolder}/4Meme-MCP/mcp-server/run-mcp.sh.
+- For Claude Desktop, replace /absolute/path/to/4Meme-MCP with your real local path.`;
 
 export default function McpSetupPanel() {
   const [target, setTarget] = useState<'cursor' | 'claude'>('cursor');

@@ -11,10 +11,7 @@ export default function Navbar() {
           <MemeMCPLogo variant="icon" size={38} />
           <div className="flex flex-col leading-none">
             <span className="text-lg font-semibold tracking-tight text-white">
-              4Meme
-            </span>
-            <span className="text-xs font-bold tracking-[0.2em] uppercase" style={{ color: GREEN }}>
-              MCP Server
+              4Meme-MCP
             </span>
           </div>
         </Link>
