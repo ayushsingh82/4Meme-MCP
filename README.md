@@ -1,116 +1,49 @@
 # 4Meme-MCP
 
-MCP server + setup UI for querying `four.meme` launchpad data and helper on-chain analytics.
+4Meme-MCP is an AI-native data layer that brings four.meme launchpad and on-chain insights into a single MCP interface.
 
-This repo contains:
-- a Next.js app with an MCP setup panel
-- an MCP server in `mcp-server/` that exposes tools over stdio
+Instead of switching between launchpad pages, API docs, and chain explorers, users can query token data, rankings, trade quotes, and helper analytics through natural language.
 
-## What this MCP exposes
+It combines launchpad API responses with helper on-chain lookups to deliver structured outputs that are easy for agents and users to consume.
 
-Tools implemented in `mcp-server/src/index.ts`:
+Designed for AI agents, traders, and developers, 4Meme-MCP enables faster token research, cleaner automation workflows, and better decision support.
 
-- `get_public_config`
-- `get_token_info` (input: `address`)
-- `get_rankings` (input: `category`, `page`, `size`)
-- `get_onchain_info` (input: `address`)
-- `get_trade_quote` (input: `token`, `side`, optional `amount`, `funds`)
-- `get_tax_rewards` (input: `tokenAddress`, `userAddress`)
-- `calculate_initial_price` (input: `maxRaising`, `totalSupply`, `offers`, `reserves`)
-- `is_agent_wallet` (input: `address`)
+## Problem it solves
 
-Data sources used:
-- `https://four.meme/meme-api/v1`
-- BSC RPC + helper contracts via `ethers`
+Meme-token research and execution data is scattered across multiple pages and APIs.
 
-## Project structure
+Users often need to manually combine:
 
-```text
-4Meme-MCP/
-├── app/                       # Next.js app (includes MCP setup UI)
-├── mcp-server/                # MCP server implementation
-│   ├── src/
-│   ├── package.json
-│   └── run-mcp.sh             # stdio launcher used by Cursor/Claude
-├── .cursor/mcp.json           # Project-local Cursor MCP config
-└── package.json               # Root scripts (next + mcp:dev)
-```
+- token metadata and launch status
+- rankings across market categories
+- quote calculations for buy/sell flows
+- wallet-level checks and tax reward context
 
-## Local development
+This fragmentation slows down analysis and makes automated workflows harder to build.
 
-Install dependencies:
+## Solution
 
-```bash
-npm install
-cd mcp-server && npm install
-```
+4Meme-MCP unifies these capabilities into one MCP server.
 
-Run the web app:
+Users can ask directly for token details, rankings, quotes, and config/state data, while AI clients receive structured responses they can reason over.
 
-```bash
-npm run dev
-```
+Core capabilities include:
 
-Run MCP server from repo root:
+- unified four.meme data access via MCP tools
+- helper on-chain information for deeper token context
+- standardized inputs for address, token, and wallet queries
+- simple local stdio transport for Cursor and Claude integrations
 
-```bash
-npm run mcp:dev
-```
+## Who it is for
 
-## MCP config
+- **AI agents** that need reliable, queryable four.meme and on-chain context
+- **Traders** who want faster discovery of token opportunities and market state
+- **Developers** building AI-powered launchpad research and trading workflows
 
-### Cursor (project-local)
+## Why 4Meme-MCP
 
-Use `.cursor/mcp.json`:
-
-```json
-{
-  "mcpServers": {
-    "4mememcp": {
-      "command": "bash",
-      "args": ["${workspaceFolder}/mcp-server/run-mcp.sh"]
-    }
-  }
-}
-```
-
-If your Cursor workspace root is the parent folder (not `4Meme-MCP`), use:
-
-```json
-{
-  "mcpServers": {
-    "4mememcp": {
-      "command": "bash",
-      "args": ["${workspaceFolder}/4Meme-MCP/mcp-server/run-mcp.sh"]
-    }
-  }
-}
-```
-
-### Claude Desktop
-
-Add this under `mcpServers` in:
-`~/Library/Application Support/Claude/claude_desktop_config.json`
-
-```json
-{
-  "4mememcp": {
-    "command": "bash",
-    "args": ["/absolute/path/to/4Meme-MCP/mcp-server/run-mcp.sh"]
-  }
-}
-```
-
-## Example prompts
-
-- `Call get_rankings with category "hot", page 1, size 10`
-- `Call get_token_info for address "0x..."`
-- `Call get_onchain_info for address "0x..."`
-- `Call get_trade_quote with token "0x...", side "buy", amount "1", funds "0"`
-- `Call get_tax_rewards with tokenAddress "0x..." and userAddress "0x..."`
-
-## Notes
-
-- `run-mcp.sh` launches the server with `tsx` for reliable TypeScript execution.
-- The MCP server communicates over stdio; restart Cursor/Claude after config changes.
+- **Unified interface:** one MCP surface for launchpad + helper on-chain data
+- **Agent-ready outputs:** structured tool responses that are easy to automate
+- **Natural language UX:** ask for token/ranking/quote info directly
+- **Faster decisions:** less manual stitching, more actionable context
 

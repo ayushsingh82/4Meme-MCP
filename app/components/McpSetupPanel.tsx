@@ -47,6 +47,38 @@ Notes:
 - If workspace root is parent folder, use \${workspaceFolder}/4Meme-MCP/mcp-server/run-mcp.sh.
 - For Claude Desktop, replace /absolute/path/to/4Meme-MCP with your real local path.`;
 
+const endpointCards = [
+  {
+    title: 'API base URL',
+    items: ['https://four.meme/meme-api/v1'],
+  },
+  {
+    title: 'Read-only endpoints',
+    items: [
+      '/public/config',
+      '/private/token/get',
+      '/private/token/getById',
+      '/rankings (Hot, 24h volume, newest, graduated)',
+      '/token/info (On-chain via helper)',
+      '/buy/sell/quotes (On-chain via helper)',
+    ],
+  },
+  {
+    title: 'MCP transport',
+    items: ['Local stdio server (dev)', 'npm run mcp:dev'],
+  },
+  {
+    title: 'Input examples',
+    items: ['address: "0x1234...abcd"', 'token: "0x1234...abcd"', 'userAddress: "0xabcd...1234"'],
+  },
+];
+
+const noteItems = [
+  'Cursor config above assumes workspace root is 4Meme-MCP.',
+  'If workspace root is parent folder, use ${workspaceFolder}/4Meme-MCP/mcp-server/run-mcp.sh.',
+  'For Claude Desktop, replace /absolute/path/to/4Meme-MCP with your real local path.',
+];
+
 export default function McpSetupPanel() {
   const [target, setTarget] = useState<'cursor' | 'claude'>('cursor');
   const [copied, setCopied] = useState<'config' | 'endpoints' | null>(null);
@@ -123,9 +155,38 @@ export default function McpSetupPanel() {
               {copied === 'endpoints' ? 'Copied endpoints' : 'Copy endpoints'}
             </button>
           </div>
-          <pre className="rounded-lg p-4 text-xs md:text-sm overflow-x-auto border" style={{ borderColor: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.78)', backgroundColor: '#070707' }}>
-            <code>{endpointsText}</code>
-          </pre>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {endpointCards.map((card) => (
+              <div
+                key={card.title}
+                className="rounded-xl border p-4"
+                style={{ borderColor: 'rgba(255,255,255,0.08)', backgroundColor: 'rgba(255,255,255,0.02)' }}
+              >
+                <h4 className="text-sm font-semibold text-white mb-3">{card.title}</h4>
+                <ul className="space-y-2">
+                  {card.items.map((item) => (
+                    <li key={item} className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.72)' }}>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          <div
+            className="mt-4 rounded-xl border p-4"
+            style={{ borderColor: 'rgba(255,255,255,0.08)', backgroundColor: 'rgba(255,255,255,0.02)' }}
+          >
+            <h4 className="text-sm font-semibold text-white mb-3">Notes</h4>
+            <ul className="space-y-2">
+              {noteItems.map((item) => (
+                <li key={item} className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.72)' }}>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </section>
